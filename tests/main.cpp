@@ -1,5 +1,7 @@
-#include "tst_test1.h"
-#include "fibonachi_test.h"
+#include "save_test.h"
+#include "move_test.h"
+#include "insert_test.h"
+#include "copybegin_test.h"
 
 #include <gtest/gtest.h>
 
