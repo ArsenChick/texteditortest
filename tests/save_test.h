@@ -141,17 +141,18 @@ TEST(saveTestNegative, emptytext) {
     sprintf(debuglog, "debuglog.txt");
     sprintf(output, "%s/output2.txt", INPUTDIRSAVE);
 
-    int newSTDerr = open(debuglog, O_WRONLY | O_CREAT | O_TRUNC, 0660);
+    int newSTDerr = open(debuglog, O_WRONLY | O_CREAT | O_TRUNC, S_IWRITE | S_IREAD);
     ASSERT_NE(newSTDerr, -1);
-    int oldSTDerr = dup(STDERR_FILENO);
-    int success = dup2(newSTDerr, STDERR_FILENO);
+    int oldSTDerr = dup(STDOUT_FILENO);
+    close(STDOUT_FILENO);
+    int success = dup2(newSTDerr, STDOUT_FILENO);
     ASSERT_TRUE(success >= 0);
 
-    fprintf(stderr, "This is stdout now!\n");
+    printf("Hello!\n");
     save(txt, output);
 
     close(newSTDerr);
-    dup2(oldSTDerr, STDERR_FILENO);
+    dup2(oldSTDerr, STDOUT_FILENO);
 
     int testFD = open(debuglog, O_RDONLY);
     char *outBuf = (char *)malloc(sizeof(char)*128);
