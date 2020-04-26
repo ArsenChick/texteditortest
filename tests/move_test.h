@@ -127,11 +127,11 @@ TEST(moveTestNegative, emptyText) {
     dup2(oldSTDerr, STDERR_FILENO);
 
     int testFD = open(debug, O_RDONLY);
-    char *outBuf = (char *)malloc(sizeof(char)*128);
-    char *testBuf = (char *)malloc(sizeof(char)*128);
+    char *outBuf = (char *)malloc(sizeof(char)*64);
+    char *testBuf = (char *)malloc(sizeof(char)*64);
     int testCount;
 
-    testCount = read(testFD, testBuf, 128);
+    testCount = read(testFD, testBuf, 64);
     sprintf(outBuf, "There is no text to work with!\n");
     ASSERT_TRUE(testCount > 0);
     close(testFD);
@@ -153,7 +153,7 @@ TEST(moveTestNegative, emptyText) {
 TEST(moveTestNegative, wrongPos) {
     text txt = create_text();
 
-    char* input = (char *)malloc(sizeof(char)*2048);
+    char *input = (char *)malloc(sizeof(char)*2048);
     char *debug = (char *)malloc(sizeof(char)*64);
     sprintf(input, "%s/input.txt", INPUTDIRMOVE);
     sprintf(debug, "file.log");
@@ -186,6 +186,85 @@ TEST(moveTestNegative, wrongPos) {
                     "Can't place cursor here! No such line!\n"
                     "Can't place cursor here! Incorrect position!\n"
                     "Can't place cursor here! Incorrect position!\n");
+    ASSERT_TRUE(testCount > 0);
+    close(testFD);
+
+    for(int i = 0; i < testCount; i++)
+        ASSERT_EQ(outBuf[i], testBuf[i]);
+
+    free(outBuf);
+    free(testBuf);
+
+    int ret = std::remove(debug);
+    ASSERT_EQ(ret, 0);
+    free(debug);
+    remove_all(txt);
+}
+
+
+
+TEST(moveTestNegative, noArguments) {
+    char cmdline[MAXLINE + 1];
+    char *cmd;
+    char *arg;
+
+    text txt = create_text();
+    append_line(txt, "This is a test line.");
+
+    char *debug = (char *)malloc(sizeof(char)*64);
+    char *command = (char *)malloc(sizeof(char)*2048);
+    sprintf(command, "%s/command_two.txt", INPUTDIRMOVE);
+    sprintf(debug, "file.log");
+
+    int newSTDin = open(command, O_RDONLY);
+    int oldSTDin = dup(STDIN_FILENO);
+    dup2(newSTDin, STDIN_FILENO);
+    free(command);
+
+    // Original line from editor.cpp
+    char* success = fgets(cmdline, MAXLINE, stdin);
+    EXPECT_STRNE(success, NULL);
+
+    close(newSTDin);
+    dup2(oldSTDin, STDIN_FILENO);
+
+    int newSTDout = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    ASSERT_NE(newSTDout, -1);
+    int oldSTDout = dup(STDOUT_FILENO);
+    close(STDOUT_FILENO);
+    dup2(newSTDout, STDOUT_FILENO);
+
+    // Original lines from editor.cpp
+    cmd = strtok(cmdline, " \n");
+    if (strcmp(cmd, "m") == 0) {
+        if ((arg = strtok(NULL, " \n")) == NULL) {
+            EXPECT_TRUE(true);
+            fprintf(stdout, "Usage: m line position\n");
+        } else {
+            int line = atoi(arg);
+            if ((arg = strtok(NULL, " \n")) == NULL) {
+                EXPECT_TRUE(true);
+                fprintf(stdout, "Usage: m line position\n");
+            } else {
+                int pos = atoi(arg);
+                EXPECT_TRUE(false);
+                move(txt, line, pos);
+            }
+        }
+    } else
+        EXPECT_TRUE(false);
+
+    fflush(stdout);
+    close(newSTDout);
+    dup2(oldSTDout, STDOUT_FILENO);
+
+    int testFD = open(debug, O_RDONLY);
+    char *outBuf = (char *)malloc(sizeof(char)*64);
+    char *testBuf = (char *)malloc(sizeof(char)*64);
+    int testCount;
+
+    testCount = read(testFD, testBuf, 64);
+    sprintf(outBuf, "Usage: m line position\n");
     ASSERT_TRUE(testCount > 0);
     close(testFD);
 
