@@ -4,6 +4,10 @@ language:
 before_install:
   - pip install --user cpp-coveralls
 
+addons:
+  sonarcloud:
+    organization: "doomfister"
+
 script:
   - qmake
   - make
@@ -11,6 +15,12 @@ script:
 
 after_success:
   - coveralls --root . -E ".*external.*" -E ".*tests.*"
+  - build-wrapper-linux-x86-64 --out-dir bw-output make clean all
+  - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
+
+cache:
+  directories:
+  - '$HOME/.sonar/cache'
 
 notifications:
   email: false
