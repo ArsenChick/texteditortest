@@ -83,7 +83,8 @@ TEST(saveTestPositive, terminal) {
     free(command);
 
     // Original line from editor.cpp
-    fgets(cmdline, MAXLINE, stdin);
+    char* success = fgets(cmdline, MAXLINE, stdin);
+    EXPECT_STRNE(success, NULL);
 
     close(newSTDin);
     dup2(oldSTDin, STDIN_FILENO);
@@ -249,7 +250,8 @@ TEST(saveTestNegative, noFilename) {
     free(command);
 
     // Original line from editor.cpp
-    fgets(cmdline, MAXLINE, stdin);
+    char* success = fgets(cmdline, MAXLINE, stdin);
+    EXPECT_STRNE(success, NULL);
 
     close(newSTDin);
     dup2(oldSTDin, STDIN_FILENO);
