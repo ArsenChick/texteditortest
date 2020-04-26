@@ -188,9 +188,9 @@ TEST(saveTestNegative, securedFile) {
     sprintf(debug, "file.log");
     sprintf(output, "%s/outputSecured.txt", INPUTDIRSAVE);
 
-    /*int locked = open(output, O_WRONLY | O_CREAT | O_TRUNC, 0500);
+    int locked = creat(output, 0000);
     ASSERT_NE(locked, -1);
-    close(locked);*/
+    close(locked);
 
     int newSTDout = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     ASSERT_NE(newSTDout, -1);
@@ -220,10 +220,12 @@ TEST(saveTestNegative, securedFile) {
     free(outBuf);
     free(testBuf);
 
+    chmod(output, 0777);
+
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);
-    /*ret = std::remove(output);
-    ASSERT_EQ(ret, 0);*/
+    ret = std::remove(output);
+    ASSERT_EQ(ret, 0);
 
     free(debug);
     free(output);
