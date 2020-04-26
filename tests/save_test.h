@@ -188,6 +188,7 @@ TEST(saveTestNegative, securedFile) {
     sprintf(debug, "file.log");
     sprintf(output, "%s/outputSecured.txt", INPUTDIRSAVE);
 
+    // Creating a temporary file
     int locked = creat(output, 0000);
     ASSERT_NE(locked, -1);
     close(locked);
