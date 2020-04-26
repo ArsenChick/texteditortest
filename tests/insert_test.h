@@ -17,7 +17,7 @@ extern "C++" {
 TEST(insertTestPositive, functional) {
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRINS);
 
     load(txt, inputTest);
@@ -26,8 +26,8 @@ TEST(insertTestPositive, functional) {
     char line[32] = {" This is a test line."};
     insert(txt, line);
 
-    char *testOutput = (char *)malloc(sizeof(char)*1024);
-    char *originalOutput = (char *)malloc(sizeof(char)*1024);
+    char *testOutput = (char *)malloc(sizeof(char)*2048);
+    char *originalOutput = (char *)malloc(sizeof(char)*2048);
     sprintf(originalOutput, "%s/output.txt", INPUTDIRINS);
     sprintf(testOutput, "%s/outputTest.txt", INPUTDIRINS);
 
@@ -66,13 +66,13 @@ TEST(insertTestPositive, terminal) {
 
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRINS);
 
     load(txt, inputTest);
     free(inputTest);
 
-    char *command = (char *)malloc(sizeof(char)*1024);
+    char *command = (char *)malloc(sizeof(char)*2048);
     sprintf(command, "%s/command_one.txt", INPUTDIRINS);
 
     int newSTDin = open(command, O_RDONLY);
@@ -100,8 +100,8 @@ TEST(insertTestPositive, terminal) {
         }
     }
 
-    char *testOutput = (char *)malloc(sizeof(char)*64);
-    char *originalOutput = (char *)malloc(sizeof(char)*1024);
+    char *testOutput = (char *)malloc(sizeof(char)*2048);
+    char *originalOutput = (char *)malloc(sizeof(char)*2048);
     sprintf(originalOutput, "%s/output.txt", INPUTDIRINS);
     sprintf(testOutput, "%s/outputTest.txt", INPUTDIRINS);
 
@@ -204,11 +204,11 @@ TEST(insertTestNegative, longString) {
     dup2(oldSTDout, STDOUT_FILENO);
 
     int testFD = open(debug, O_RDONLY);
-    char *outBuf = (char *)malloc(sizeof(char)*512);
-    char *testBuf = (char *)malloc(sizeof(char)*512);
+    char *outBuf = (char *)malloc(sizeof(char)*64);
+    char *testBuf = (char *)malloc(sizeof(char)*64);
     int testCount;
 
-    testCount = read(testFD, testBuf, 512);
+    testCount = read(testFD, testBuf, 64);
     sprintf(outBuf, "The insert line is too long!\n");
     ASSERT_TRUE(testCount > 0);
     close(testFD);
