@@ -234,7 +234,7 @@ TEST(insertTestNegative, noString) {
     text txt = create_text();
     append_line(txt, "This is a test line.");
 
-    char *command = (char *)malloc(sizeof(char)*1024);
+    char *command = (char *)malloc(sizeof(char)*2048);
     sprintf(command, "%s/command_two.txt", INPUTDIRINS);
     char *debug = (char *)malloc(sizeof(char)*64);
     sprintf(debug, "file.log");

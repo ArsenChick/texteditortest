@@ -17,7 +17,7 @@ extern "C++" {
 TEST(cbeginTestPositive, functional) {
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRCB);
 
     load(txt, inputTest);
@@ -25,8 +25,8 @@ TEST(cbeginTestPositive, functional) {
 
     copy_begin(txt);
 
-    char *testOutput = (char *)malloc(sizeof(char)*1024);
-    char *originalOutput = (char *)malloc(sizeof(char)*1024);
+    char *testOutput = (char *)malloc(sizeof(char)*2048);
+    char *originalOutput = (char *)malloc(sizeof(char)*2048);
     sprintf(originalOutput, "%s/output.txt", INPUTDIRCB);
     sprintf(testOutput, "%s/outputTest.txt", INPUTDIRCB);
 
@@ -66,13 +66,13 @@ TEST(cbeginTestPositive, terminal) {
 
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRCB);
 
     load(txt, inputTest);
     free(inputTest);
 
-    char *command = (char *)malloc(sizeof(char)*1024);
+    char *command = (char *)malloc(sizeof(char)*2048);
     sprintf(command, "%s/command_one.txt", INPUTDIRCB);
 
     int newSTDin = open(command, O_RDONLY);
@@ -93,8 +93,8 @@ TEST(cbeginTestPositive, terminal) {
         copy_begin(txt);
     }
 
-    char *testOutput = (char *)malloc(sizeof(char)*64);
-    char *originalOutput = (char *)malloc(sizeof(char)*1024);
+    char *testOutput = (char *)malloc(sizeof(char)*2048);
+    char *originalOutput = (char *)malloc(sizeof(char)*2048);
     sprintf(originalOutput, "%s/output.txt", INPUTDIRCB);
     sprintf(testOutput, "%s/outputTest.txt", INPUTDIRCB);
 

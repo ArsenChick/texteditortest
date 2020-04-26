@@ -17,7 +17,7 @@ extern "C++" {
 TEST(saveTestPositive, functional) {
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRSAVE);
 
     load(txt, inputTest);
@@ -25,8 +25,8 @@ TEST(saveTestPositive, functional) {
 
     append_line(txt, "This is a test line.");
 
-    char *testOutput = (char *)malloc(sizeof(char)*1024);
-    char *originalOutput = (char *)malloc(sizeof(char)*1024);
+    char *testOutput = (char *)malloc(sizeof(char)*2048);
+    char *originalOutput = (char *)malloc(sizeof(char)*2048);
     sprintf(originalOutput, "%s/output.txt", INPUTDIRSAVE);
     sprintf(testOutput, "%s/outputTest.txt", INPUTDIRSAVE);
 
@@ -67,7 +67,7 @@ TEST(saveTestPositive, terminal) {
 
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRSAVE);
 
     load(txt, inputTest);
@@ -75,7 +75,7 @@ TEST(saveTestPositive, terminal) {
 
     append_line(txt, "This is a test line.");
 
-    char *command = (char *)malloc(sizeof(char)*1024);
+    char *command = (char *)malloc(sizeof(char)*2048);
     sprintf(command, "%s/command_one.txt", INPUTDIRSAVE);
 
     int newSTDin = open(command, O_RDONLY);
@@ -103,7 +103,7 @@ TEST(saveTestPositive, terminal) {
         EXPECT_TRUE(false);
 
     char *testOutput = (char *)malloc(sizeof(char)*64);
-    char *originalOutput = (char *)malloc(sizeof(char)*1024);
+    char *originalOutput = (char *)malloc(sizeof(char)*2048);
     sprintf(originalOutput, "%s/output.txt", INPUTDIRSAVE);
     sprintf(testOutput, "outputTest.txt");
 
@@ -209,11 +209,11 @@ TEST(saveTestNegative, securedFile) {
     dup2(oldSTDout, STDOUT_FILENO);
 
     int testFD = open(debug, O_RDONLY);
-    char *outBuf = (char *)malloc(sizeof(char)*512);
-    char *testBuf = (char *)malloc(sizeof(char)*512);
+    char *outBuf = (char *)malloc(sizeof(char)*1024);
+    char *testBuf = (char *)malloc(sizeof(char)*1024);
     int testCount;
 
-    testCount = read(testFD, testBuf, 512);
+    testCount = read(testFD, testBuf, 1024);
     sprintf(outBuf, "The file %s cannot be opened\n", output);
     ASSERT_TRUE(testCount > 0);
     close(testFD);
@@ -246,7 +246,7 @@ TEST(saveTestNegative, noFilename) {
     text txt = create_text();
     append_line(txt, "This is a test line.");
 
-    char *command = (char *)malloc(sizeof(char)*1024);
+    char *command = (char *)malloc(sizeof(char)*2048);
     sprintf(command, "%s/command_two.txt", INPUTDIRSAVE);
     char *debug = (char *)malloc(sizeof(char)*64);
     sprintf(debug, "file.log");

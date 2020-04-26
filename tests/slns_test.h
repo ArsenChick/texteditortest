@@ -17,8 +17,8 @@ extern "C++" {
 TEST(slnsTestPositive, functional) {
     text txt = create_text();
 
-    char *outputTest = (char *)malloc(sizeof(char)*1024);
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *outputTest = (char *)malloc(sizeof(char)*2048);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(outputTest, "%s/outputTest.txt", INPUTDIRSLNS);
     sprintf(inputTest, "%s/input.txt", INPUTDIRSLNS);
 
@@ -37,7 +37,7 @@ TEST(slnsTestPositive, functional) {
     close(newSTDout);
     dup2(oldSTDout, STDOUT_FILENO);
 
-    char *originalOutput = (char *)malloc(sizeof(char)*1024);
+    char *originalOutput = (char *)malloc(sizeof(char)*2048);
     sprintf(originalOutput, "%s/output.txt", INPUTDIRSLNS);
 
     int testFD = open(outputTest, O_RDONLY);
@@ -73,15 +73,15 @@ TEST(slnsTestPositive, terminal) {
 
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
-    char *outputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
+    char *outputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRSLNS);
     sprintf(outputTest, "%s/outputTest.txt", INPUTDIRSLNS);
 
     load(txt, inputTest);
     free(inputTest);
 
-    char *command = (char *)malloc(sizeof(char)*1024);
+    char *command = (char *)malloc(sizeof(char)*2048);
     sprintf(command, "%s/command_one.txt", INPUTDIRSLNS);
 
     int newSTDin = open(command, O_RDONLY);
@@ -114,7 +114,7 @@ TEST(slnsTestPositive, terminal) {
     close(newSTDout);
     dup2(oldSTDout, STDOUT_FILENO);
 
-    char *originalOutput = (char *)malloc(sizeof(char)*1024);
+    char *originalOutput = (char *)malloc(sizeof(char)*2048);
     sprintf(originalOutput, "%s/output.txt", INPUTDIRSLNS);
 
     int testFD = open(outputTest, O_RDONLY);

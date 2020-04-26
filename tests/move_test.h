@@ -18,7 +18,7 @@ extern "C++" {
 TEST(moveTestPositive, functional) {
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRMOVE);
 
     load(txt, inputTest);
@@ -50,13 +50,13 @@ TEST(moveTestPositive, terminal) {
 
     text txt = create_text();
 
-    char *inputTest = (char *)malloc(sizeof(char)*1024);
+    char *inputTest = (char *)malloc(sizeof(char)*2048);
     sprintf(inputTest, "%s/input.txt", INPUTDIRMOVE);
 
     load(txt, inputTest);
     free(inputTest);
 
-    char *command = (char *)malloc(sizeof(char)*1024);
+    char *command = (char *)malloc(sizeof(char)*2048);
     sprintf(command, "%s/command_one.txt", INPUTDIRMOVE);
 
     int newSTDin = open(command, O_RDONLY);
@@ -153,7 +153,7 @@ TEST(moveTestNegative, emptyText) {
 TEST(moveTestNegative, wrongPos) {
     text txt = create_text();
 
-    char* input = (char *)malloc(sizeof(char)*1024);
+    char* input = (char *)malloc(sizeof(char)*2048);
     char *debug = (char *)malloc(sizeof(char)*64);
     sprintf(input, "%s/input.txt", INPUTDIRMOVE);
     sprintf(debug, "file.log");
