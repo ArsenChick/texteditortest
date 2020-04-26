@@ -203,7 +203,7 @@ TEST(moveTestNegative, wrongPos) {
 
 
 
-TEST(moveTestNegative, noArguments) {
+/*TEST(moveTestNegative, noArguments) {
     char cmdline[MAXLINE + 1];
     char *cmd;
     char *arg;
@@ -278,6 +278,6 @@ TEST(moveTestNegative, noArguments) {
     ASSERT_EQ(ret, 0);
     free(debug);
     remove_all(txt);
-}
+}*/
 
 #endif // MOVE_TEST_H

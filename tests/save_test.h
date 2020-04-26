@@ -14,6 +14,8 @@ extern "C++" {
 #include "text/text.h"
 }
 
+
+
 TEST(saveTestPositive, functional) {
     text txt = create_text();
 
