@@ -14,8 +14,6 @@ extern "C++" {
 #include "text/text.h"
 }
 
-
-
 TEST(saveTestPositive, functional) {
     text txt = create_text();
 
@@ -96,10 +94,11 @@ TEST(saveTestPositive, terminal) {
         if ((arg = strtok(NULL, " \n")) == NULL) {
             fprintf(stderr, "Usage: save filename\n");
         } else {
-            ASSERT_TRUE(true);
+            EXPECT_TRUE(true);
             save(txt, arg);
         }
-    }
+    } else
+        EXPECT_TRUE(false);
 
     char *testOutput = (char *)malloc(sizeof(char)*64);
     char *originalOutput = (char *)malloc(sizeof(char)*1024);
@@ -133,28 +132,27 @@ TEST(saveTestPositive, terminal) {
 
 
 
-TEST(saveTestNegative, emptytext) {
+TEST(saveTestNegative, emptyText) {
     text txt = create_text();
 
-    char *debuglog = (char *)malloc(sizeof(char)*64);
+    char *debug = (char *)malloc(sizeof(char)*64);
     char *output = (char *)malloc(sizeof(char)*1024);
-    sprintf(debuglog, "debuglog.txt");
+    sprintf(debug, "file.log");
     sprintf(output, "%s/output2.txt", INPUTDIRSAVE);
 
-    int newSTDerr = open(debuglog, O_WRONLY | O_CREAT | O_TRUNC, S_IWRITE | S_IREAD);
+    int newSTDerr = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     ASSERT_NE(newSTDerr, -1);
-    int oldSTDerr = dup(STDOUT_FILENO);
-    close(STDOUT_FILENO);
-    int success = dup2(newSTDerr, STDOUT_FILENO);
-    ASSERT_TRUE(success >= 0);
+    int oldSTDerr = dup(STDERR_FILENO);
+    close(STDERR_FILENO);
+    dup2(newSTDerr, STDERR_FILENO);
 
-    printf("Hello!\n");
     save(txt, output);
 
+    fflush(stderr);
     close(newSTDerr);
-    dup2(oldSTDerr, STDOUT_FILENO);
+    dup2(oldSTDerr, STDERR_FILENO);
 
-    int testFD = open(debuglog, O_RDONLY);
+    int testFD = open(debug, O_RDONLY);
     char *outBuf = (char *)malloc(sizeof(char)*128);
     char *testBuf = (char *)malloc(sizeof(char)*128);
     int testCount;
@@ -170,13 +168,133 @@ TEST(saveTestNegative, emptytext) {
     free(outBuf);
     free(testBuf);
 
-    int ret = std::remove(debuglog);
+    int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);
     ret = std::remove(output);
     ASSERT_EQ(ret, 0);
 
-    free(debuglog);
+    free(debug);
     free(output);
+}
+
+
+
+TEST(saveTestNegative, securedFile) {
+    text txt = create_text();
+
+    char *debug = (char *)malloc(sizeof(char)*64);
+    char *output = (char *)malloc(sizeof(char)*1024);
+    sprintf(debug, "file.log");
+    sprintf(output, "%s/outputSecured.txt", INPUTDIRSAVE);
+
+    /*int locked = open(output, O_WRONLY | O_CREAT | O_TRUNC, 0500);
+    ASSERT_NE(locked, -1);
+    close(locked);*/
+
+    int newSTDout = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    ASSERT_NE(newSTDout, -1);
+    int oldSTDout = dup(STDOUT_FILENO);
+    close(STDOUT_FILENO);
+    dup2(newSTDout, STDOUT_FILENO);
+
+    save(txt, output);
+
+    fflush(stdout);
+    close(newSTDout);
+    dup2(oldSTDout, STDOUT_FILENO);
+
+    int testFD = open(debug, O_RDONLY);
+    char *outBuf = (char *)malloc(sizeof(char)*512);
+    char *testBuf = (char *)malloc(sizeof(char)*512);
+    int testCount;
+
+    testCount = read(testFD, testBuf, 512);
+    sprintf(outBuf, "The file %s cannot be opened\n", output);
+    ASSERT_TRUE(testCount > 0);
+    close(testFD);
+
+    for(int i = 0; i < testCount; i++)
+        ASSERT_EQ(outBuf[i], testBuf[i]);
+
+    free(outBuf);
+    free(testBuf);
+
+    int ret = std::remove(debug);
+    ASSERT_EQ(ret, 0);
+    /*ret = std::remove(output);
+    ASSERT_EQ(ret, 0);*/
+
+    free(debug);
+    free(output);
+}
+
+
+
+TEST(saveTestNegative, noFilename) {
+    char cmdline[MAXLINE + 1];
+    char *cmd;
+    char *arg;
+
+    text txt = create_text();
+    append_line(txt, "This is a test line.");
+
+    char *command = (char *)malloc(sizeof(char)*1024);
+    sprintf(command, "%s/command_two.txt", INPUTDIRSAVE);
+    char *debug = (char *)malloc(sizeof(char)*64);
+    sprintf(debug, "file.log");
+
+    int newSTDin = open(command, O_RDONLY);
+    int oldSTDin = dup(STDIN_FILENO);
+    dup2(newSTDin, STDIN_FILENO);
+    free(command);
+
+    // Original line from editor.cpp
+    fgets(cmdline, MAXLINE, stdin);
+
+    close(newSTDin);
+    dup2(oldSTDin, STDIN_FILENO);
+
+    int newSTDerr = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    ASSERT_NE(newSTDerr, -1);
+    int oldSTDerr = dup(STDERR_FILENO);
+    close(STDERR_FILENO);
+    dup2(newSTDerr, STDERR_FILENO);
+
+    // Original lines from editor.cpp
+    cmd = strtok(cmdline, " \n");
+    if (strcmp(cmd, "save") == 0) {
+        if ((arg = strtok(NULL, " \n")) == NULL) {
+            EXPECT_TRUE(true);
+            fprintf(stderr, "Usage: save filename\n");
+        } else {
+            EXPECT_TRUE(false);
+            save(txt, arg);
+        }
+    }
+
+    fflush(stderr);
+    close(newSTDerr);
+    dup2(oldSTDerr, STDERR_FILENO);
+
+    int testFD = open(debug, O_RDONLY);
+    char *outBuf = (char *)malloc(sizeof(char)*64);
+    char *testBuf = (char *)malloc(sizeof(char)*64);
+    int testCount;
+
+    testCount = read(testFD, testBuf, 64);
+    sprintf(outBuf, "Usage: save filename\n");
+    ASSERT_TRUE(testCount > 0);
+    close(testFD);
+
+    for(int i = 0; i < testCount; i++)
+        ASSERT_EQ(outBuf[i], testBuf[i]);
+
+    free(outBuf);
+    free(testBuf);
+
+    int ret = std::remove(debug);
+    ASSERT_EQ(ret, 0);
+    free(debug);
 }
 
 #endif // SAVE_TEST_H

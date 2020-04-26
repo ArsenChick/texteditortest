@@ -1,10 +1,12 @@
-#ifndef COPYBEGIN_TEST_H
-#define COPYBEGIN_TEST_H
+#ifndef SLNS_TEST_H
+#define SLNS_TEST_H
 
 #include <gtest/gtest.h>
 
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <cstdio>
 
 extern "C++" {
@@ -12,67 +14,74 @@ extern "C++" {
 #include "text/text.h"
 }
 
-
-
-TEST(cbeginTestPositive, functional) {
+TEST(slnsTestPositive, functional) {
     text txt = create_text();
 
+    char *outputTest = (char *)malloc(sizeof(char)*1024);
     char *inputTest = (char *)malloc(sizeof(char)*1024);
-    sprintf(inputTest, "%s/input.txt", INPUTDIRCB);
+    sprintf(outputTest, "%s/outputTest.txt", INPUTDIRSLNS);
+    sprintf(inputTest, "%s/input.txt", INPUTDIRSLNS);
 
     load(txt, inputTest);
     free(inputTest);
 
-    copy_begin(txt);
+    int newSTDout = open(outputTest, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    ASSERT_NE(newSTDout, -1);
+    int oldSTDout = dup(STDOUT_FILENO);
+    close(STDOUT_FILENO);
+    dup2(newSTDout, STDOUT_FILENO);
 
-    char *testOutput = (char *)malloc(sizeof(char)*1024);
+    showlastnonspace(txt);
+
+    fflush(stdout);
+    close(newSTDout);
+    dup2(oldSTDout, STDOUT_FILENO);
+
     char *originalOutput = (char *)malloc(sizeof(char)*1024);
-    sprintf(originalOutput, "%s/output.txt", INPUTDIRCB);
-    sprintf(testOutput, "%s/outputTest.txt", INPUTDIRCB);
+    sprintf(originalOutput, "%s/output.txt", INPUTDIRSLNS);
 
-    save(txt, testOutput);
-
-    int testFD = open(testOutput, O_RDONLY);
+    int testFD = open(outputTest, O_RDONLY);
     int originalFD = open(originalOutput, O_RDONLY);
+    char *outBuf = (char *)malloc(sizeof(char)*16);
+    char *testBuf = (char *)malloc(sizeof(char)*16);
+    int testCount, outputCount;
     free(originalOutput);
 
-    char *outBuf = (char *)malloc(sizeof(char)*256);
-    char *testBuf = (char *)malloc(sizeof(char)*256);
-    int outCount, testCount;
-
-    outCount = read(originalFD, outBuf, 256);
-    testCount = read(testFD, testBuf, 256);
-    close(originalFD);
+    testCount = read(testFD, testBuf, 16);
+    outputCount = read(originalFD, outBuf, 16);
     close(testFD);
+    close(originalFD);
 
-    ASSERT_EQ(outCount, testCount);
+    ASSERT_EQ(testCount, outputCount);
     for(int i = 0; i < testCount; i++)
         ASSERT_EQ(outBuf[i], testBuf[i]);
 
     free(outBuf);
     free(testBuf);
 
-    int ret = std::remove(testOutput);
+    int ret = std::remove(outputTest);
     ASSERT_EQ(ret, 0);
-    free(testOutput);
+    free(outputTest);
 }
 
 
 
-TEST(cbeginTestPositive, terminal) {
+TEST(slnsTestPositive, terminal) {
     char cmdline[MAXLINE + 1];
     char *cmd;
 
     text txt = create_text();
 
     char *inputTest = (char *)malloc(sizeof(char)*1024);
-    sprintf(inputTest, "%s/input.txt", INPUTDIRCB);
+    char *outputTest = (char *)malloc(sizeof(char)*1024);
+    sprintf(inputTest, "%s/input.txt", INPUTDIRSLNS);
+    sprintf(outputTest, "%s/outputTest.txt", INPUTDIRSLNS);
 
     load(txt, inputTest);
     free(inputTest);
 
     char *command = (char *)malloc(sizeof(char)*1024);
-    sprintf(command, "%s/command_one.txt", INPUTDIRCB);
+    sprintf(command, "%s/command_one.txt", INPUTDIRSLNS);
 
     int newSTDin = open(command, O_RDONLY);
     int oldSTDin = dup(STDIN_FILENO);
@@ -85,20 +94,28 @@ TEST(cbeginTestPositive, terminal) {
     close(newSTDin);
     dup2(oldSTDin, STDIN_FILENO);
 
+    int newSTDout = open(outputTest, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    ASSERT_NE(newSTDout, -1);
+    int oldSTDout = dup(STDOUT_FILENO);
+    close(STDOUT_FILENO);
+    dup2(newSTDout, STDOUT_FILENO);
+
     // Original lines from editor.cpp
     cmd = strtok(cmdline, " \n");
-    if (strcmp(cmd, "cb") == 0) {
-        copy_begin(txt);
-    }
+    if (strcmp(cmd, "showlastnonspace") == 0) {
+        EXPECT_TRUE(true);
+        showlastnonspace(txt);
+    } else
+        EXPECT_TRUE(false);
 
-    char *testOutput = (char *)malloc(sizeof(char)*64);
+    fflush(stdout);
+    close(newSTDout);
+    dup2(oldSTDout, STDOUT_FILENO);
+
     char *originalOutput = (char *)malloc(sizeof(char)*1024);
-    sprintf(originalOutput, "%s/output.txt", INPUTDIRCB);
-    sprintf(testOutput, "%s/outputTest.txt", INPUTDIRCB);
+    sprintf(originalOutput, "%s/output.txt", INPUTDIRSLNS);
 
-    save(txt, testOutput);
-
-    int testFD = open(testOutput, O_RDONLY);
+    int testFD = open(outputTest, O_RDONLY);
     int originalFD = open(originalOutput, O_RDONLY);
     free(originalOutput);
 
@@ -118,14 +135,14 @@ TEST(cbeginTestPositive, terminal) {
     free(outBuf);
     free(testBuf);
 
-    int ret = std::remove(testOutput);
+    int ret = std::remove(outputTest);
     ASSERT_EQ(ret, 0);
-    free(testOutput);
+    free(outputTest);
 }
 
 
 
-TEST(cbeginTestNegative, emptyText) {
+TEST(slnsTestNegative, emptyText) {
     text txt = create_text();
 
     char *debug = (char *)malloc(sizeof(char)*64);
@@ -137,7 +154,7 @@ TEST(cbeginTestNegative, emptyText) {
     close(STDERR_FILENO);
     dup2(newSTDerr, STDERR_FILENO);
 
-    copy_begin(txt);
+    showlastnonspace(txt);
 
     fflush(stderr);
     close(newSTDerr);
@@ -164,4 +181,4 @@ TEST(cbeginTestNegative, emptyText) {
     free(debug);
 }
 
-#endif // COPYBEGIN_TEST_H
+#endif // SLNS_TEST_H

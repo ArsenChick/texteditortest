@@ -14,6 +14,7 @@ QMAKE_CFLAGS += -fprofile-arcs -ftest-coverage
 LIBS += -lgcov
 
 DEFINES += INPUTDIRSAVE=\\\"$$PWD/testsave\\\" \
+    INPUTDIRSLNS=\\\"$$PWD/testslns\\\" \
     INPUTDIRMOVE=\\\"$$PWD/testmove\\\" \
     INPUTDIRINS=\\\"$$PWD/testinsert\\\" \
     INPUTDIRCB=\\\"$$PWD/testcbegin\\\"
@@ -25,7 +26,8 @@ HEADERS +=     \
     copybegin_test.h \
     insert_test.h \
     move_test.h \
-    save_test.h
+    save_test.h \
+    slns_test.h
 
 SOURCES +=     main.cpp \
     ../app/load.cpp \
