@@ -126,6 +126,7 @@ TEST(insertTestPositive, terminal) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(testOutput);
     ASSERT_EQ(ret, 0);
@@ -170,6 +171,7 @@ TEST(insertTestNegative, emptyText) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);
@@ -216,6 +218,7 @@ TEST(insertTestNegative, longString) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);
@@ -289,6 +292,7 @@ TEST(insertTestNegative, noString) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);

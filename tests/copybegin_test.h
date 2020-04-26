@@ -51,6 +51,7 @@ TEST(cbeginTestPositive, functional) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(testOutput);
     ASSERT_EQ(ret, 0);
@@ -118,6 +119,7 @@ TEST(cbeginTestPositive, terminal) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(testOutput);
     ASSERT_EQ(ret, 0);
@@ -159,6 +161,7 @@ TEST(cbeginTestNegative, emptyText) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);

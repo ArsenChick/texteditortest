@@ -58,6 +58,7 @@ TEST(slnsTestPositive, functional) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(outputTest);
     ASSERT_EQ(ret, 0);
@@ -135,6 +136,7 @@ TEST(slnsTestPositive, terminal) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(outputTest);
     ASSERT_EQ(ret, 0);
@@ -176,6 +178,7 @@ TEST(slnsTestNegative, emptyText) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);

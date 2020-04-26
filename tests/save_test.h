@@ -51,6 +51,7 @@ TEST(saveTestPositive, functional) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(testOutput);
     ASSERT_EQ(ret, 0);
@@ -125,6 +126,7 @@ TEST(saveTestPositive, terminal) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(testOutput);
     ASSERT_EQ(ret, 0);
@@ -168,6 +170,7 @@ TEST(saveTestNegative, emptyText) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);
@@ -220,6 +223,7 @@ TEST(saveTestNegative, securedFile) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     chmod(output, 0777);
 
@@ -296,6 +300,7 @@ TEST(saveTestNegative, noFilename) {
 
     free(outBuf);
     free(testBuf);
+    remove_all(txt);
 
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);

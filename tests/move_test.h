@@ -38,6 +38,7 @@ TEST(moveTestPositive, functional) {
 
     ASSERT_EQ(newLine, 1);
     ASSERT_EQ(newPos, 5);
+    remove_all(txt);
 }
 
 
@@ -102,6 +103,7 @@ TEST(moveTestPositive, terminal) {
 
     ASSERT_EQ(newLine, 1);
     ASSERT_EQ(newPos, 5);
+    remove_all(txt);
 }
 
 
@@ -143,6 +145,7 @@ TEST(moveTestNegative, emptyText) {
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);
     free(debug);
+    remove_all(txt);
 }
 
 
@@ -195,6 +198,7 @@ TEST(moveTestNegative, wrongPos) {
     int ret = std::remove(debug);
     ASSERT_EQ(ret, 0);
     free(debug);
+    remove_all(txt);
 }
 
 #endif // MOVE_TEST_H

@@ -1,7 +1,9 @@
 #include "save_test.h"
-#include "slns_test.h"
-#include "insert_test.h"
 #include "copybegin_test.h"
+#include "slns_test.h"
+#include "move_test.h"
+#include "insert_test.h"
+
 
 #include <gtest/gtest.h>
 
