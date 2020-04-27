@@ -18,7 +18,7 @@ TEST(cbeginTestPositive, functional) {
     text txt = create_text();
 
     char *inputTest = (char *)malloc(sizeof(char)*2048);
-    sprintf(inputTest, "%s/input.txt", INPUTDIRCB);
+    snprintf(inputTest, 2048, "%s/input.txt", INPUTDIRCB);
 
     load(txt, inputTest);
     free(inputTest);
@@ -27,8 +27,8 @@ TEST(cbeginTestPositive, functional) {
 
     char *testOutput = (char *)malloc(sizeof(char)*2048);
     char *originalOutput = (char *)malloc(sizeof(char)*2048);
-    sprintf(originalOutput, "%s/output.txt", INPUTDIRCB);
-    sprintf(testOutput, "%s/outputTest.txt", INPUTDIRCB);
+    snprintf(originalOutput, 2048, "%s/output.txt", INPUTDIRCB);
+    snprintf(testOutput, 2048, "%s/outputTest.txt", INPUTDIRCB);
 
     save(txt, testOutput);
 
@@ -67,13 +67,13 @@ TEST(cbeginTestPositive, terminal) {
     text txt = create_text();
 
     char *inputTest = (char *)malloc(sizeof(char)*2048);
-    sprintf(inputTest, "%s/input.txt", INPUTDIRCB);
+    snprintf(inputTest, 2048, "%s/input.txt", INPUTDIRCB);
 
     load(txt, inputTest);
     free(inputTest);
 
     char *command = (char *)malloc(sizeof(char)*2048);
-    sprintf(command, "%s/command_one.txt", INPUTDIRCB);
+    snprintf(command, 2048, "%s/command_one.txt", INPUTDIRCB);
 
     int newSTDin = open(command, O_RDONLY);
     int oldSTDin = dup(STDIN_FILENO);
@@ -95,8 +95,8 @@ TEST(cbeginTestPositive, terminal) {
 
     char *testOutput = (char *)malloc(sizeof(char)*2048);
     char *originalOutput = (char *)malloc(sizeof(char)*2048);
-    sprintf(originalOutput, "%s/output.txt", INPUTDIRCB);
-    sprintf(testOutput, "%s/outputTest.txt", INPUTDIRCB);
+    snprintf(originalOutput, 2048, "%s/output.txt", INPUTDIRCB);
+    snprintf(testOutput, 2048, "%s/outputTest.txt", INPUTDIRCB);
 
     save(txt, testOutput);
 
@@ -132,7 +132,7 @@ TEST(cbeginTestNegative, emptyText) {
     text txt = create_text();
 
     char *debug = (char *)malloc(sizeof(char)*64);
-    sprintf(debug, "file.log");
+    snprintf(debug, 64, "file.log");
 
     int newSTDerr = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     ASSERT_NE(newSTDerr, -1);
@@ -147,12 +147,12 @@ TEST(cbeginTestNegative, emptyText) {
     dup2(oldSTDerr, STDERR_FILENO);
 
     int testFD = open(debug, O_RDONLY);
-    char *outBuf = (char *)malloc(sizeof(char)*128);
-    char *testBuf = (char *)malloc(sizeof(char)*128);
+    char *outBuf = (char *)malloc(sizeof(char)*64);
+    char *testBuf = (char *)malloc(sizeof(char)*64);
     int testCount;
 
-    testCount = read(testFD, testBuf, 128);
-    sprintf(outBuf, "There is no text to work with!\n");
+    testCount = read(testFD, testBuf, 64);
+    snprintf(outBuf, 64, "There is no text to work with!\n");
     ASSERT_TRUE(testCount > 0);
     close(testFD);
 

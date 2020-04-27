@@ -18,7 +18,7 @@ TEST(insertTestPositive, functional) {
     text txt = create_text();
 
     char *inputTest = (char *)malloc(sizeof(char)*2048);
-    sprintf(inputTest, "%s/input.txt", INPUTDIRINS);
+    snprintf(inputTest, 2048, "%s/input.txt", INPUTDIRINS);
 
     load(txt, inputTest);
     free(inputTest);
@@ -28,8 +28,8 @@ TEST(insertTestPositive, functional) {
 
     char *testOutput = (char *)malloc(sizeof(char)*2048);
     char *originalOutput = (char *)malloc(sizeof(char)*2048);
-    sprintf(originalOutput, "%s/output.txt", INPUTDIRINS);
-    sprintf(testOutput, "%s/outputTest.txt", INPUTDIRINS);
+    snprintf(originalOutput, 2048, "%s/output.txt", INPUTDIRINS);
+    snprintf(testOutput, 2048, "%s/outputTest.txt", INPUTDIRINS);
 
     save(txt, testOutput);
 
@@ -67,13 +67,13 @@ TEST(insertTestPositive, terminal) {
     text txt = create_text();
 
     char *inputTest = (char *)malloc(sizeof(char)*2048);
-    sprintf(inputTest, "%s/input.txt", INPUTDIRINS);
+    snprintf(inputTest, 2048, "%s/input.txt", INPUTDIRINS);
 
     load(txt, inputTest);
     free(inputTest);
 
     char *command = (char *)malloc(sizeof(char)*2048);
-    sprintf(command, "%s/command_one.txt", INPUTDIRINS);
+    snprintf(command, 2048, "%s/command_one.txt", INPUTDIRINS);
 
     int newSTDin = open(command, O_RDONLY);
     int oldSTDin = dup(STDIN_FILENO);
@@ -102,8 +102,8 @@ TEST(insertTestPositive, terminal) {
 
     char *testOutput = (char *)malloc(sizeof(char)*2048);
     char *originalOutput = (char *)malloc(sizeof(char)*2048);
-    sprintf(originalOutput, "%s/output.txt", INPUTDIRINS);
-    sprintf(testOutput, "%s/outputTest.txt", INPUTDIRINS);
+    snprintf(originalOutput, 2048, "%s/output.txt", INPUTDIRINS);
+    snprintf(testOutput, 2048, "%s/outputTest.txt", INPUTDIRINS);
 
     save(txt, testOutput);
 
@@ -140,8 +140,8 @@ TEST(insertTestNegative, emptyText) {
 
     char *debug = (char *)malloc(sizeof(char)*64);
     char *string = (char *)malloc(sizeof(char)*32);
-    sprintf(debug, "file.log");
-    sprintf(string, "This is a test line.");
+    snprintf(debug, 64, "file.log");
+    snprintf(string, 32, "This is a test line.");
 
     int newSTDerr = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     ASSERT_NE(newSTDerr, -1);
@@ -157,12 +157,12 @@ TEST(insertTestNegative, emptyText) {
     dup2(oldSTDerr, STDERR_FILENO);
 
     int testFD = open(debug, O_RDONLY);
-    char *outBuf = (char *)malloc(sizeof(char)*128);
-    char *testBuf = (char *)malloc(sizeof(char)*128);
+    char *outBuf = (char *)malloc(sizeof(char)*64);
+    char *testBuf = (char *)malloc(sizeof(char)*64);
     int testCount;
 
-    testCount = read(testFD, testBuf, 128);
-    sprintf(outBuf, "There is no text to work with!\n");
+    testCount = read(testFD, testBuf, 64);
+    snprintf(outBuf, 64, "There is no text to work with!\n");
     ASSERT_TRUE(testCount > 0);
     close(testFD);
 
@@ -186,7 +186,7 @@ TEST(insertTestNegative, longString) {
 
     char *debug = (char *)malloc(sizeof(char)*64);
     char *string = (char *)malloc(sizeof(char)*256);
-    sprintf(debug, "file.log");
+    snprintf(debug, 64, "file.log");
     for(int i = 0; i < 255; i++)
         string[i] = 'a';
     string[255] = '\0';
@@ -209,7 +209,7 @@ TEST(insertTestNegative, longString) {
     int testCount;
 
     testCount = read(testFD, testBuf, 64);
-    sprintf(outBuf, "The insert line is too long!\n");
+    snprintf(outBuf, 64, "The insert line is too long!\n");
     ASSERT_TRUE(testCount > 0);
     close(testFD);
 
@@ -235,9 +235,9 @@ TEST(insertTestNegative, noString) {
     append_line(txt, "This is a test line.");
 
     char *command = (char *)malloc(sizeof(char)*2048);
-    sprintf(command, "%s/command_two.txt", INPUTDIRINS);
+    snprintf(command, 2048, "%s/command_two.txt", INPUTDIRINS);
     char *debug = (char *)malloc(sizeof(char)*64);
-    sprintf(debug, "file.log");
+    snprintf(debug, 64, "file.log");
 
     int newSTDin = open(command, O_RDONLY);
     int oldSTDin = dup(STDIN_FILENO);
@@ -283,7 +283,7 @@ TEST(insertTestNegative, noString) {
     int testCount;
 
     testCount = read(testFD, testBuf, 64);
-    sprintf(outBuf, "Usage: i textstring\n");
+    snprintf(outBuf, 64, "Usage: i textstring\n");
     ASSERT_TRUE(testCount > 0);
     close(testFD);
 
