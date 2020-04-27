@@ -19,7 +19,7 @@ TEST(moveTestPositive, functional) {
     text txt = create_text();
 
     char *inputTest = (char *)malloc(sizeof(char)*2048);
-    snprintf(inputTest, 2048, "%s/input.txt", INPUTDIRMOVE);
+    sprintf(inputTest, "%s/input.txt", INPUTDIRMOVE);
 
     load(txt, inputTest);
     free(inputTest);
@@ -51,13 +51,13 @@ TEST(moveTestPositive, terminal) {
     text txt = create_text();
 
     char *inputTest = (char *)malloc(sizeof(char)*2048);
-    snprintf(inputTest, 2048, "%s/input.txt", INPUTDIRMOVE);
+    sprintf(inputTest, "%s/input.txt", INPUTDIRMOVE);
 
     load(txt, inputTest);
     free(inputTest);
 
     char *command = (char *)malloc(sizeof(char)*2048);
-    snprintf(command, 2048, "%s/command_one.txt", INPUTDIRMOVE);
+    sprintf(command, "%s/command_one.txt", INPUTDIRMOVE);
 
     int newSTDin = open(command, O_RDONLY);
     int oldSTDin = dup(STDIN_FILENO);
@@ -112,7 +112,7 @@ TEST(moveTestNegative, emptyText) {
     text txt = create_text();
 
     char *debug = (char *)malloc(sizeof(char)*64);
-    snprintf(debug, 64, "file.log");
+    sprintf(debug, "file.log");
 
     int newSTDerr = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     ASSERT_NE(newSTDerr, -1);
@@ -132,7 +132,7 @@ TEST(moveTestNegative, emptyText) {
     int testCount;
 
     testCount = read(testFD, testBuf, 64);
-    snprintf(outBuf, 64, "There is no text to work with!\n");
+    sprintf(outBuf, "There is no text to work with!\n");
     ASSERT_TRUE(testCount > 0);
     close(testFD);
 
@@ -155,8 +155,8 @@ TEST(moveTestNegative, wrongPos) {
 
     char *input = (char *)malloc(sizeof(char)*2048);
     char *debug = (char *)malloc(sizeof(char)*64);
-    snprintf(input, 2048, "%s/input.txt", INPUTDIRMOVE);
-    snprintf(debug, 64, "file.log");
+    sprintf(input, "%s/input.txt", INPUTDIRMOVE);
+    sprintf(debug, "file.log");
 
     load(txt, input);
     free(input);
@@ -182,7 +182,7 @@ TEST(moveTestNegative, wrongPos) {
     int testCount;
 
     testCount = read(testFD, testBuf, 256);
-    snprintf(outBuf, 256, "Can't place cursor here! No such line!\n"
+    sprintf(outBuf, "Can't place cursor here! No such line!\n"
                     "Can't place cursor here! No such line!\n"
                     "Can't place cursor here! Incorrect position!\n"
                     "Can't place cursor here! Incorrect position!\n");
