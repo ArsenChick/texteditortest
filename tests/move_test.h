@@ -203,7 +203,7 @@ TEST(moveTestNegative, wrongPos) {
 
 
 
-/*TEST(moveTestNegative, noArguments) {
+TEST(moveTestNegative, noArguments) {
     char cmdline[MAXLINE + 1];
     char *cmd;
     char *arg;
@@ -218,7 +218,9 @@ TEST(moveTestNegative, wrongPos) {
 
     int newSTDin = open(command, O_RDONLY);
     int oldSTDin = dup(STDIN_FILENO);
-    dup2(newSTDin, STDIN_FILENO);
+    close(STDIN_FILENO);
+    int go = dup2(newSTDin, STDIN_FILENO);
+    ASSERT_EQ(go, 0);
     free(command);
 
     // Original line from editor.cpp
@@ -226,7 +228,8 @@ TEST(moveTestNegative, wrongPos) {
     EXPECT_STRNE(success, NULL);
 
     close(newSTDin);
-    dup2(oldSTDin, STDIN_FILENO);
+    go = dup2(oldSTDin, STDIN_FILENO);
+    ASSERT_EQ(go, 0);
 
     int newSTDout = open(debug, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     ASSERT_NE(newSTDout, -1);
@@ -278,6 +281,6 @@ TEST(moveTestNegative, wrongPos) {
     ASSERT_EQ(ret, 0);
     free(debug);
     remove_all(txt);
-}*/
+}
 
 #endif // MOVE_TEST_H
